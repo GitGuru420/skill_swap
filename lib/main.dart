@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'features/auth/onboarding_screen.dart';
+import 'features/auth/registration_screen.dart';
 
 void main() async {
   // Ensure Flutter bindings are initialized before doing async work
@@ -40,7 +41,8 @@ class SkillSwapApp extends StatelessWidget {
       initialRoute: isFirstTime ? '/onboarding' : '/login',
       routes: {
         '/onboarding': (context) => const OnboardingScreen(),
-        '/login': (context) => const DummyLoginScreen(), // Temporary placeholder
+        '/login': (context) => const DummyLoginScreen(),
+        '/register': (context) => const RegistrationScreen(),
       },
     );
   }
@@ -52,9 +54,15 @@ class DummyLoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      appBar: AppBar(title: const Text('Login Placeholder')),
       body: Center(
-        child: Text('Login Screen Placeholder'),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/register');
+          },
+          child: const Text('Go to Registration Screen'),
+        ),
       ),
     );
   }
