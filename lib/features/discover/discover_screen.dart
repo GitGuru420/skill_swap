@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -8,14 +9,42 @@ class DiscoverScreen extends StatefulWidget {
 }
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
-  // Mock data representing skills offered by other users
-  final List<Map<String, dynamic>> _mockSkills = [
-    {'title': 'Flutter Development', 'user': 'John Doe', 'rating': 4.8},
-    {'title': 'UI/UX Design', 'user': 'Jane Smith', 'rating': 4.9},
-    {'title': 'Spoken English', 'user': 'Rahim Ali', 'rating': 4.5},
-    {'title': 'Digital Marketing', 'user': 'Sara Khan', 'rating': 4.7},
-    {'title': 'Python Programming', 'user': 'Alex Johnson', 'rating': 4.6},
-  ];
+  final _supabase = Supabase.instance.client;
+  List<dynamic> _skills = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRealSkills();
+  }
+
+  // Fetch all skills from Supabase
+  Future<void> _fetchRealSkills() async {
+    setState(() => _isLoading = true);
+    try {
+      // Fetching all data from the 'skills' table, newest first
+      final data = await _supabase
+          .from('skills')
+          .select()
+          .order('created_at', ascending: false);
+
+      if (mounted) {
+        setState(() {
+          _skills = data;
+        });
+      }
+    } catch (error) {
+      debugPrint("Error fetching skills: $error");
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to load skills')));
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,65 +63,96 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 filled: true,
-                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                fillColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
               ),
             ),
             const SizedBox(height: 24),
-            
-            const Text(
-              'Trending Skills',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Available Skills',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: _fetchRealSkills,
+                  tooltip: 'Refresh List',
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-            
-            // List of Skills
+
+            // List of Real Skills
             Expanded(
-              child: ListView.builder(
-                itemCount: _mockSkills.length,
-                itemBuilder: (context, index) {
-                  final skill = _mockSkills[index];
-                  return Card(
-                    elevation: 2,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(12),
-                      leading: CircleAvatar(
-                        radius: 24,
-                        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                        child: const Icon(Icons.person, size: 28),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _skills.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No skills available yet. Be the first to add one!',
                       ),
-                      title: Text(
-                        skill['title'], 
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 4.0),
-                        child: Text('Offered by: ${skill['user']}'),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 20),
-                          const SizedBox(width: 4),
-                          Text(
-                            skill['rating'].toString(),
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    )
+                  : ListView.builder(
+                      itemCount: _skills.length,
+                      itemBuilder: (context, index) {
+                        final skill = _skills[index];
+                        return Card(
+                          elevation: 2,
+                          margin: const EdgeInsets.only(bottom: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ],
-                      ),
-                      onTap: () {
-                        // Action when a skill is tapped
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Tapped on ${skill['title']}')),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.all(12),
+                            leading: CircleAvatar(
+                              radius: 24,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primaryContainer,
+                              child: const Icon(Icons.person, size: 28),
+                            ),
+                            title: Text(
+                              skill['title'] ?? 'Unknown Skill',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(
+                                skill['description'] ??
+                                    'No description available',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            trailing: ElevatedButton(
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Swap request feature coming soon!',
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
+                                minimumSize: const Size(0, 36),
+                              ),
+                              child: const Text('Swap'),
+                            ),
+                          ),
                         );
                       },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),
