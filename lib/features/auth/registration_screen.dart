@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -30,12 +31,68 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     super.dispose();
   }
 
-  void _handleRegistration() {
+  Future<void> _handleRegistration() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implement Supabase Registration logic later
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registration logic will be added here!')),
-      );
+      try {
+        // Show loading indicator
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const Center(child: CircularProgressIndicator()),
+        );
+
+        // 1. Create user in Supabase Auth
+        final AuthResponse res = await Supabase.instance.client.auth.signUp(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+
+        final User? user = res.user;
+
+        if (user != null) {
+          // 2. Insert additional data into 'profiles' table
+          await Supabase.instance.client.from('profiles').insert({
+            'id': user.id, // Linking Auth user ID with Profile ID
+            'name': _nameController.text.trim(),
+            'email': _emailController.text.trim(),
+            'phone': _phoneController.text.trim(),
+            'teaches': _teachesController.text.trim(),
+            'learns': _learnsController.text.trim(),
+            'tokens': 0, // Initial token balance
+          });
+
+          // Close loading indicator
+          if (mounted) Navigator.pop(context);
+
+          // Show success message and navigate to Login
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Registration successful! Please login.')),
+            );
+            Navigator.pushReplacementNamed(context, '/login');
+          }
+        }
+      } on AuthException catch (error) {
+        // Close loading indicator
+        if (mounted) Navigator.pop(context);
+        
+        // Show Supabase auth error message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.message)),
+          );
+        }
+      } catch (error) {
+        // Close loading indicator
+        if (mounted) Navigator.pop(context);
+        
+        // Show generic error message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('An unexpected error occurred')),
+          );
+        }
+      }
     }
   }
 

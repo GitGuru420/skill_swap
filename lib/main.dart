@@ -10,8 +10,8 @@ void main() async {
 
   // Initialize Supabase
   await Supabase.initialize(
-    url: 'YOUR_SUPABASE_URL',
-    anonKey: 'YOUR_SUPABASE_ANON_KEY',
+    url: 'https://mvtgzdpmprlrzotimrgk.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12dGd6ZHBtcHJscnpvdGltcmdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2OTEwNTYsImV4cCI6MjA5OTI2NzA1Nn0.KGmQ92ZqitbuEHdLqP7PUKN7PjFvfsTevqQh2Xgwqlc',
   );
 
   // Check if onboarding has been completed before
