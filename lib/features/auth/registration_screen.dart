@@ -85,6 +85,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       } catch (error) {
         // Close loading indicator
         if (mounted) Navigator.pop(context);
+        print("Supabase Error: $error");
         
         // Show generic error message
         if (mounted) {
