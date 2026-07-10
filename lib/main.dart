@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'features/auth/onboarding_screen.dart';
 import 'features/auth/registration_screen.dart';
+import 'features/auth/login_screen.dart'; 
 
 void main() async {
   // Ensure Flutter bindings are initialized before doing async work
@@ -37,32 +38,39 @@ class SkillSwapApp extends StatelessWidget {
           primary: const Color(0xFF4F46E5),
         ),
       ),
-      // If it is the first time, show Onboarding, otherwise go straight to Login placeholder
+      // Directs to onboarding if first time, else launches the real login screen
       initialRoute: isFirstTime ? '/onboarding' : '/login',
       routes: {
         '/onboarding': (context) => const OnboardingScreen(),
-        '/login': (context) => const DummyLoginScreen(),
+        '/login': (context) => const LoginScreen(), // Replaced placeholder with real LoginScreen
         '/register': (context) => const RegistrationScreen(),
+        '/': (context) => const HomeScreenPlaceholder(), // Route where user lands after a successful login
       },
     );
   }
 }
 
-// Temporary placeholder screen for compile purposes
-class DummyLoginScreen extends StatelessWidget {
-  const DummyLoginScreen({super.key});
+// Temporary post-login landing screen placeholder
+class HomeScreenPlaceholder extends StatelessWidget {
+  const HomeScreenPlaceholder({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login Placeholder')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/register');
-          },
-          child: const Text('Go to Registration Screen'),
-        ),
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await Supabase.instance.client.auth.signOut();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+          ),
+        ],
+      ),
+      body: const Center(
+        child: Text('Welcome to your Skill Swap Dashboard!'),
       ),
     );
   }
