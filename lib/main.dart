@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'features/auth/onboarding_screen.dart';
 import 'features/auth/registration_screen.dart';
 import 'features/auth/login_screen.dart'; 
+import 'features/home/home_screen.dart';
 
 void main() async {
   // Ensure Flutter bindings are initialized before doing async work
@@ -42,9 +43,9 @@ class SkillSwapApp extends StatelessWidget {
       initialRoute: isFirstTime ? '/onboarding' : '/login',
       routes: {
         '/onboarding': (context) => const OnboardingScreen(),
-        '/login': (context) => const LoginScreen(), // Replaced placeholder with real LoginScreen
+        '/login': (context) => const LoginScreen(), 
         '/register': (context) => const RegistrationScreen(),
-        '/': (context) => const HomeScreenPlaceholder(), // Route where user lands after a successful login
+        '/': (context) => const HomeScreen(), 
       },
     );
   }
