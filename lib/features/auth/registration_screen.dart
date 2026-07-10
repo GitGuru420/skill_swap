@@ -58,7 +58,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             'phone': _phoneController.text.trim(),
             'teaches': _teachesController.text.trim(),
             'learns': _learnsController.text.trim(),
-            'tokens': 0, // Initial token balance
+            'tokens': 100, // Initial token balance
           });
 
           // Close loading indicator
