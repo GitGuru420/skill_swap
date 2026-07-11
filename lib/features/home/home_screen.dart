@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../discover/discover_screen.dart';
 import '../profile/profile_screen.dart';
 import '../swap/swap_screen.dart';
+import '../chat/chat_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -56,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const DiscoverScreen(),
     const SwapScreen(),
-    const Center(child: Text('Chat Placeholder', style: TextStyle(fontSize: 20))),
+    const ChatListScreen(),
     const ProfileScreen(),
   ];
 
