@@ -132,14 +132,72 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               ),
                             ),
                             trailing: ElevatedButton(
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Swap request feature coming soon!',
+                              onPressed: () async {
+                                final currentUser = _supabase.auth.currentUser;
+                                if (currentUser == null) return;
+
+                                // 1. nijer skill e requqest pathano jabe na
+                                if (skill['user_id'] == currentUser.id) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'You cannot swap your own skill!',
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                  return;
+                                }
+
+                                try {
+                                  // 2. aage theke e request pathano ache kina check kora
+                                  final existingRequest = await _supabase
+                                      .from('swap_requests')
+                                      .select()
+                                      .eq('sender_id', currentUser.id)
+                                      .eq('skill_id', skill['id'])
+                                      .maybeSingle();
+
+                                  if (existingRequest != null) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Request already sent!',
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    return;
+                                  }
+
+                                  // 3. new swap request insert kora
+                                  await _supabase.from('swap_requests').insert({
+                                    'sender_id': currentUser.id,
+                                    'receiver_id': skill['user_id'],
+                                    'skill_id': skill['id'],
+                                  });
+
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Swap request sent successfully!',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                } catch (error) {
+                                  debugPrint("Error sending request: $error");
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Failed to send request'),
+                                      ),
+                                    );
+                                  }
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(

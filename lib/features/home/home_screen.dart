@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../discover/discover_screen.dart';
 import '../profile/profile_screen.dart';
+import '../swap/swap_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Placeholder screens for your existing feature folders
   final List<Widget> _screens = [
     const DiscoverScreen(),
-    const Center(child: Text('Swap Requests Placeholder', style: TextStyle(fontSize: 20))),
+    const SwapScreen(),
     const Center(child: Text('Chat Placeholder', style: TextStyle(fontSize: 20))),
     const ProfileScreen(),
   ];
