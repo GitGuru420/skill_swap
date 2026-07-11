@@ -113,7 +113,7 @@ class _SwapScreenState extends State<SwapScreen> {
                             ),
                           ),
                         ),
-                        trailing: status == 'pending'
+                        trailing: (status == 'pending' || status == "'pending'")
                             ? Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
