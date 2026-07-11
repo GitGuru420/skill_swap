@@ -100,9 +100,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade50, 
       appBar: AppBar(
-        title: const Text('Create Account'),
+        title: const Text(
+          'Create Account',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -118,7 +125,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               const SizedBox(height: 24),
               
-              // Name Field
+              // Name Field 
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
@@ -130,7 +137,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Email Field
+              // Email Field 
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -143,7 +150,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Phone Field
+              // Phone Field 
               TextFormField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
@@ -155,7 +162,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Password Field
+              // Password Field 
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
@@ -168,7 +175,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Teaches Skill Field
+              // Teaches Skill Field 
               TextFormField(
                 controller: _teachesController,
                 decoration: const InputDecoration(
@@ -180,7 +187,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Learns Skill Field
+              // Learns Skill Field 
               TextFormField(
                 controller: _learnsController,
                 decoration: const InputDecoration(
@@ -192,15 +199,42 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               const SizedBox(height: 32),
 
-              // Sign Up Button
-              ElevatedButton(
-                onPressed: _handleRegistration,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: const Color(0xFF4F46E5),
-                  foregroundColor: Colors.white,
+              // ৩. Sign Up Button 
+              Container(
+                height: 55,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: const LinearGradient(
+                    colors: [Colors.blueAccent, Colors.purpleAccent],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.purpleAccent.withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
-                child: const Text('Sign Up', style: TextStyle(fontSize: 18)),
+                child: ElevatedButton(
+                  onPressed: _handleRegistration,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text(
+                    'Sign Up',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
