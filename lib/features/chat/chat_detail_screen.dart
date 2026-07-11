@@ -167,8 +167,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   .stream(primaryKey: ['id'])
                   .order('created_at', ascending: true),
               builder: (context, snapshot) {
-                if (!snapshot.hasData)
+                if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
+                }
 
                 final messages = snapshot.data!.where((msg) {
                   final isMeToOther =
@@ -180,13 +181,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   return isMeToOther || isOtherToMe;
                 }).toList();
 
-                if (messages.isEmpty)
+                if (messages.isEmpty) {
                   return const Center(
                     child: Text(
                       'Say hi! 👋',
                       style: TextStyle(color: Colors.grey),
                     ),
                   );
+                }
 
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 10),
