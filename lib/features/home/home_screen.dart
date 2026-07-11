@@ -64,32 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Skill Swap'),
-        actions: [
-          // Display Wallet Tokens in AppBar
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  const Icon(Icons.stars, color: Colors.amber),
-                  const SizedBox(width: 4),
-                  Text(
-                    '$_tokens',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _handleLogout,
-            tooltip: 'Logout',
-          ),
-        ],
-      ),
+      
       // Display the selected screen based on BottomNavigationBar index
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
